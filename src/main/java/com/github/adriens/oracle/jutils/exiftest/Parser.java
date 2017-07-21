@@ -19,12 +19,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Hashtable;
 import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.imageio.ImageIO;
+import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 /**
  *
@@ -58,8 +65,8 @@ public class Parser {
             StringBuffer html = new StringBuffer("");
             html.append("<html><head><title>Exemple demande intervention cometière</title></head>");
             html.append("<body>");
-            html.append("<a href=\"" + url + "\"><img src=\"QRCODE.png\"/></a>");
-            html.append("<a href=\"" + url + "\"><img width=\"50%\" height=\"50%\" src=\"photo.jpg\"/></a>");
+            html.append("<a href=\"" + url + "\"><img src=\"cid:qrcode\"/></a>");
+            //html.append("<a href=\"" + url + "\"><img width=\"50%\" height=\"50%\" src=\"photo.jpg\"/></a>");
             html.append("</body>");
             html.append("</html>");
 
@@ -72,7 +79,7 @@ public class Parser {
 
             // send mail
             // Recipient's email ID needs to be mentioned.
-            String to = "adriens.sales@ville-noumea.nc";
+            String to = "adrien.sales@ville-noumea.nc";
 
             // Sender's email ID needs to be mentioned
             //String from = "shinigami-noreply@ville-noumea.nc";
@@ -95,6 +102,7 @@ public class Parser {
             Session session = Session.getInstance(properties);
             // Create a default MimeMessage object.
             MimeMessage message = new MimeMessage(session);
+            MimeMultipart multipart = new MimeMultipart();
 
             // Set From: header field of the header.
             message.setFrom(new InternetAddress(from));
@@ -103,12 +111,31 @@ public class Parser {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
             // Set Subject: header field
-            message.setSubject("This is the Subject Line!");
-            message.setContent(html.toString(), "text/html");
-            message.saveChanges();
+            
+            
+            // bodypart : html
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            
+            messageBodyPart.setContent(html.toString(), "text/html");
+            multipart.addBodyPart(messageBodyPart);
+            
+            // second part (the image)
+            MimeBodyPart imagePart = new MimeBodyPart();
+            imagePart.attachFile("QRCODE.png");
+            imagePart.setContentID("<" + "qrcode" + ">");
+            imagePart.setDisposition(MimeBodyPart.INLINE);
+            imagePart.setHeader("Content-Type", "image/png");
+            multipart.addBodyPart(imagePart);
 
+            // add image to the multipart
+            //multipart.addBodyPart(messageBodyPart);
+
+            // put everything together
+            message.setContent(multipart);
+            message.setSubject("Mail de test");
             // Send message
             Transport.send(message);
+
             System.out.println("Sent message successfully....");
 
         } catch (Exception ex) {
