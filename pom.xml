@@ -32,11 +32,20 @@
         </dependency>
         
         <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
-<dependency>
+<!--<dependency>
     <groupId>javax.mail</groupId>
     <artifactId>mail</artifactId>
     <version>1.4</version>
 </dependency>
+-->
+
+<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+<dependency>
+    <groupId>javax.mail</groupId>
+    <artifactId>mail</artifactId>
+    <version>1.4.7</version>
+</dependency>
+
 
 
     </dependencies>      	
