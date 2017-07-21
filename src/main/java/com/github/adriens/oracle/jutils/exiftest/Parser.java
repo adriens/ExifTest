@@ -16,8 +16,15 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Hashtable;
+import java.util.Properties;
 import javax.imageio.ImageIO;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  *
@@ -47,6 +54,62 @@ public class Parser {
             String fileType = "png";
             File qrFile = new File(filePath);
             createQRImage(qrFile, qrCodeText, size, fileType);
+
+            StringBuffer html = new StringBuffer("");
+            html.append("<html><head><title>Exemple demande intervention cometière</title></head>");
+            html.append("<body>");
+            html.append("<a href=\"" + url + "\"><img src=\"QRCODE.png\"/></a>");
+            html.append("<a href=\"" + url + "\"><img width=\"50%\" height=\"50%\" src=\"photo.jpg\"/></a>");
+            html.append("</body>");
+            html.append("</html>");
+
+            // create a dummy html
+            PrintWriter writer = new PrintWriter("mail.html");
+            writer.append(html);
+
+            writer.flush();
+            writer.close();
+
+            // send mail
+            // Recipient's email ID needs to be mentioned.
+            String to = "adriens.sales@ville-noumea.nc";
+
+            // Sender's email ID needs to be mentioned
+            //String from = "shinigami-noreply@ville-noumea.nc";
+            String from = "pinpin@ville-noumea.nc";
+
+            // Assuming you are sending email from localhost
+            String host = "svpcas.site-mairie.noumea.nc.";
+
+            // Get system properties
+            Properties properties = new Properties();
+
+            // Setup mail server
+            properties.put("mail.smtp.host", host);
+            //properties.put("mail.smtp.auth", "false");
+            //properties.put("mail.smtp.starttls.enable", "true");
+            //properties.put("mail.smtp.host", "smtp.gmail.com");
+            //properties.put("mail.smtp.port", "25");
+
+            // Get the default Session object.
+            Session session = Session.getInstance(properties);
+            // Create a default MimeMessage object.
+            MimeMessage message = new MimeMessage(session);
+
+            // Set From: header field of the header.
+            message.setFrom(new InternetAddress(from));
+
+            // Set To: header field of the header.
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+            // Set Subject: header field
+            message.setSubject("This is the Subject Line!");
+            message.setContent(html.toString(), "text/html");
+            message.saveChanges();
+
+            // Send message
+            Transport.send(message);
+            System.out.println("Sent message successfully....");
 
         } catch (Exception ex) {
             ex.printStackTrace();
