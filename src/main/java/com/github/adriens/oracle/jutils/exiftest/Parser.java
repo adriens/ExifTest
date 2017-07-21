@@ -66,7 +66,8 @@ public class Parser {
             html.append("<html><head><title>Exemple demande intervention cometière</title></head>");
             html.append("<body>");
             html.append("<a href=\"" + url + "\"><img src=\"cid:qrcode\"/></a>");
-            //html.append("<a href=\"" + url + "\"><img width=\"50%\" height=\"50%\" src=\"photo.jpg\"/></a>");
+            html.append("<a href=\"" + url + "\"><img src=\"cid:photo\"/></a>");
+            
             html.append("</body>");
             html.append("</html>");
 
@@ -126,6 +127,13 @@ public class Parser {
             imagePart.setDisposition(MimeBodyPart.INLINE);
             imagePart.setHeader("Content-Type", "image/png");
             multipart.addBodyPart(imagePart);
+            
+            MimeBodyPart photoPart = new MimeBodyPart();
+            photoPart.attachFile("photo.jpg");
+            photoPart.setContentID("<" + "photo" + ">");
+            photoPart.setDisposition(MimeBodyPart.INLINE);
+            photoPart.setHeader("Content-Type", "image/jpg");
+            multipart.addBodyPart(photoPart);
 
             // add image to the multipart
             //multipart.addBodyPart(messageBodyPart);
