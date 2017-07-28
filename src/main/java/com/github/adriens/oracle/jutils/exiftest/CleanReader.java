@@ -17,12 +17,13 @@ import java.util.Collection;
  * @author salad74
  */
 public class CleanReader {
+
     public static void main(String[] args) {
-        try{
+        try {
             String fileName = "photo.jpg";
-        Metadata metadata = ImageMetadataReader.readMetadata(new File(fileName));
-        Collection<GpsDirectory> gpsDirectories = metadata.getDirectoriesOfType(GpsDirectory.class);
-        for (GpsDirectory gpsDirectory : gpsDirectories) {
+            Metadata metadata = ImageMetadataReader.readMetadata(new File(fileName));
+            Collection<GpsDirectory> gpsDirectories = metadata.getDirectoriesOfType(GpsDirectory.class);
+            for (GpsDirectory gpsDirectory : gpsDirectories) {
                 // Try to read out the location, making sure it's non-zero
                 GeoLocation geoLocation = gpsDirectory.getGeoLocation();
                 if (geoLocation != null && !geoLocation.isZero()) {
@@ -30,14 +31,13 @@ public class CleanReader {
                     // we have a geolocaation here !
                     System.out.println("longitude : " + geoLocation.getLongitude());
                     System.out.println("latitude : " + geoLocation.getLatitude());
-                    
+
                     break;
                 }
             }
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
+
     }
 }
