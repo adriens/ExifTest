@@ -67,6 +67,12 @@ public class Parser2 {
                     System.out.println("longitude : " + longitude);
                     // https://www.google.com/maps/search/?api=1&query=58.698017,-152.522067
             String url = "https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude;
+            
+            //Internal arcgis url
+            //https://carto-qual.ville-noumea.nc/apps/POC_stationnement/?marker=166.47333333333333,-22.28111111111111
+            url = "https://carto-qual.ville-noumea.nc/apps/POC_stationnement/?marker=" + longitude + "," + latitude;
+            
+            
             System.out.println(url);
             //QRCode.from("Hello World").file("QRCode");
             String qrCodeText = url;
